@@ -9,6 +9,9 @@ class User {
     if (!this.name || !this.email || !this.phoneNumber) {
       throw new Error("All fields are required");
     }
+    if (!this.email.includes("@") || this.email.includes(" ")) {
+      throw new Error("Invalid email format");
+    }
   }
 }
 
