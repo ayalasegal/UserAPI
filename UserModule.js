@@ -23,6 +23,9 @@ function createUser(name, email, phoneNumber) {
   users.push(user);
   return user;
 }
+function getUsers(){
+  return users;
+}
 
 function updateUser(userId, name, email, phoneNumber) {
   const user = users.find((user) => user.id === userId);
@@ -57,4 +60,5 @@ module.exports = {
   updateUser,
   deleteUser,
   getUserById,
+  getUsers
 };

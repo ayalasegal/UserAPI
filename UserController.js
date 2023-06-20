@@ -1,14 +1,8 @@
 // Import the User module or model
-const User = require('./userModel');
-
+const User = require('./UserModule');
 const controller = {
   getAllUsers: async (req, res) => {
-    try {
-      const users = await User.find();
-      res.status(200).json(users);
-    } catch (error) {
-      res.status(500).json({ error: 'Internal server error' });
-    }
+      res.status(200).json(User.getUsers());
   },
 
   getUserById: async (req, res) => {
@@ -66,10 +60,17 @@ const controller = {
   addNewUser: async (req, res) => {
     const { name, email, phone } = req.body;
     try {
-      const newUser = await User.create({ name, email, phone });
+      const newUser = await User.createUser(name, email, phone);
       res.status(201).json(newUser);
     } catch (error) {
-      res.status(500).json({ error: 'Internal server error' });
+      // Handle the thrown error and send an appropriate response
+      if (error.message === "All fields are required") {
+        res.status(400).json({ error: "All fields are required" });
+      } else if (error.message === "Invalid email format") {
+        res.status(400).json({ error: "Invalid email format" });
+      } else {
+        res.status(500).json({ error: "Internal server error" });
+      }
     }
   },
 
