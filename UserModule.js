@@ -1,8 +1,14 @@
+
+const Hebcal = require('hebcal');
+// Create a new Hebcal date object
+
 class User {
-  constructor(name, email, phoneNumber) {
+  constructor(id, name, email, phoneNumber, birthDate) {
+    this.id = id;
     this.name = name;
     this.email = email;
     this.phoneNumber = phoneNumber;
+    this.birthDate = birthDate;
   }
   
   validate() {
@@ -12,13 +18,16 @@ class User {
     if (!this.email.includes("@") || this.email.includes(" ")) {
       throw new Error("Invalid email format");
     }
+    if(!phoneUtil.isValidNumberForRegion(phoneUtil.parse(this.phoneNumber, 'ISRAEL'), 'ISRAEL')){
+      throw new Error("The phone number is invalid");
+    }
   }
 }
 
 const users = [];
 
-function createUser(name, email, phoneNumber) {
-  const user = new User(name, email, phoneNumber);
+function createUser(name, email, phoneNumber, gregorianDate) {
+  const user = new User(name, email, phoneNumber, new Hebcal.HDate(gregorianDate));
   user.validate();
   users.push(user);
   return user;

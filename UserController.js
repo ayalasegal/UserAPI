@@ -68,9 +68,12 @@ const controller = {
         res.status(400).json({ error: "All fields are required" });
       } else if (error.message === "Invalid email format") {
         res.status(400).json({ error: "Invalid email format" });
+      } else if(error.message === "The phone number is invalid"){
+        res.status(400).json({ error: "The phone number is invalid"})
       } else {
         res.status(500).json({ error: "Internal server error" });
       }
+
     }
   },
 
