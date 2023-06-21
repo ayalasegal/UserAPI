@@ -20,6 +20,8 @@
   "dependencies": {
     "express": "^4.18.2",
     "google-libphonenumber": "^3.2.32",
-    "hebcal": "^2.3.2"
+    "hebcal": "^2.3.2",
+    "libphonenumber": "^0.0.10",
+    "uuid": "^9.0.0"
   }
 }

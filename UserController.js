@@ -8,7 +8,7 @@ const controller = {
   getUserById: async (req, res) => {
     const { id } = req.params;
     try {
-      const user = await User.findById(id);
+      const user = await User.getUserById(id);
       if (!user) {
         return res.status(404).json({ error: 'User not found' });
       }
@@ -19,9 +19,9 @@ const controller = {
   },
 
   getUserByName: async (req, res) => {
-    const { name } = req.query;
+    const { name } = req.params;
     try {
-      const user = await User.findOne({ name });
+      const user = await User.getUserByName(name);
       if (!user) {
         return res.status(404).json({ error: 'User not found' });
       }
@@ -32,9 +32,9 @@ const controller = {
   },
 
   getUserByMail: async (req, res) => {
-    const { email } = req.query;
+    const { email } = req.params;
     try {
-      const user = await User.findOne({ email });
+      const user = await User.getUserByMail(email);
       if (!user) {
         return res.status(404).json({ error: 'User not found' });
       }
@@ -44,10 +44,10 @@ const controller = {
     }
   },
 
-  getEmployeeByPhone: async (req, res) => {
-    const { phone } = req.query;
+  getUserByPhone: async (req, res) => {
+    const { phone } = req.params;
     try {
-      const user = await User.findOne({ phone });
+      const user = await User.getUserByPhone(phone);
       if (!user) {
         return res.status(404).json({ error: 'User not found' });
       }
@@ -58,9 +58,9 @@ const controller = {
   },
 
   addNewUser: async (req, res) => {
-    const { name, email, phone } = req.body;
+    const { name, email, phone, birthDate } = req.body;
     try {
-      const newUser = await User.createUser(name, email, phone);
+      const newUser = await User.createUser(name, email, phone, birthDate);
       res.status(201).json(newUser);
     } catch (error) {
       // Handle the thrown error and send an appropriate response
@@ -79,13 +79,9 @@ const controller = {
 
   updateUser: async (req, res) => {
     const { id } = req.params;
-    const { name, email, phone } = req.body;
+    const { name, email, phone,birthDate } = req.body;
     try {
-      const updatedUser = await User.findByIdAndUpdate(
-        id,
-        { name, email, phone },
-        { new: true }
-      );
+      const updatedUser = await User.updateUser(id, name, email, phone,birthDate)
       if (!updatedUser) {
         return res.status(404).json({ error: 'User not found' });
       }
@@ -98,8 +94,9 @@ const controller = {
   deleteUser: async (req, res) => {
     const { id } = req.params;
     try {
-      const deletedUser = await User.findByIdAndDelete(id);
-      if (!deletedUser) {
+      const deletedUserId = User.deleteUser(id);
+      console.log(deletedUserId)
+      if (deletedUserId==null||deletedUserId==undefined) {
         return res.status(404).json({ error: 'User not found' });
       }
       res.status(200).json({ message: 'User deleted successfully' });
