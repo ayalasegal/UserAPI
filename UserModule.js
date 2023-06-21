@@ -1,4 +1,3 @@
-
 const Hebcal = require('hebcal');
 const libphonenumber = require('google-libphonenumber');
 const { v4: uuidv4 } = require('uuid');
@@ -13,17 +12,17 @@ class User {
     this.phoneNumber = phoneNumber;
     this.birthDate = birthDate;
   }
-  
+
   validate() {
     if (!this.name || !this.email || !this.phoneNumber) {
-      throw new Error("All fields are required");
+      throw new Error('All fields are required');
     }
-    if (!this.email.includes("@") || this.email.includes(" ")) {
-      throw new Error("Invalid email format");
+    if (!this.email.includes('@') || this.email.includes(' ')) {
+      throw new Error('Invalid email format');
     }
 
-    if(!phoneUtil.isValidNumberForRegion(phoneUtil.parse(this.phoneNumber, 'IL'), 'IL')){
-      throw new Error("The phone number is invalid");
+    if (!phoneUtil.isValidNumberForRegion(phoneUtil.parse(this.phoneNumber, 'IL'), 'IL')) {
+      throw new Error('The phone number is invalid');
     }
   }
 }
@@ -31,28 +30,32 @@ class User {
 const users = [];
 
 function generateUniqueId() {
-  let newId;
-  do {
-    newId = uuidv4();
-  } while (users.some(user => user.id === newId));
+  return uuidv4();
+}
 
-  return newId;
-} 
+function isDuplicateId(newId) {
+  return users.some((user) => user.id === newId);
+}
 
 function createUser(name, email, phoneNumber, gregorianDate) {
-  const user = new User(generateUniqueId(), name, email, phoneNumber, new Hebcal.HDate(new Date(gregorianDate)));
+  let newId;
+  do {
+    newId = generateUniqueId();
+  } while (isDuplicateId(newId));
+  const user = new User(newId, name, email, phoneNumber, new Hebcal.HDate(new Date(gregorianDate)));
   user.validate();
   users.push(user);
   return user;
 }
-function getUsers(){
+
+function getUsers() {
   return users;
 }
 
 function updateUser(id, name, email, phoneNumber, birthDate) {
-  let user = users.find((user) => user.id == id);
+  let user = users.find((u) => u.id === Number(id));
   if (!user) {
-    throw new Error("User not found");
+    throw new Error('User not found');
   }
   user = new User(id, name, email, phoneNumber, new Hebcal.HDate(new Date(birthDate)));
   user.validate();
@@ -60,53 +63,54 @@ function updateUser(id, name, email, phoneNumber, birthDate) {
 }
 
 function deleteUser(userId) {
-  const index = users.findIndex((user) => user.id == userId);
-  if (index == -1) {
-    throw new Error("User not found");
+  const index = users.findIndex((user) => user.id === Number(userId));
+  if (index === -1) {
+    throw new Error('User not found');
   }
   users.splice(index, 1);
-  return index
+  return index;
 }
 
 function getUserById(userId) {
-  const user = users.find((user) => user.id == userId);
+  const user = users.find((us) => us.id === Number(userId));
   if (!user) {
-    throw new Error("User not found");
+    throw new Error('User not found');
   }
   return user;
 }
 
 function getUserByName(name) {
-  const user = users.find((user) => user.name == name);
+  const user = users.find((u) => u.name === name);
   if (!user) {
-    throw new Error("User not found");
+    throw new Error('User not found');
   }
   return user;
 }
 
 function getUserByPhone(phone) {
-  const user = users.find((user) => user.phoneNumber == phone);
+  const user = users.find((u) => u.phoneNumber === Number(phone));
   if (!user) {
-    throw new Error("User not found");
+    throw new Error('User not found');
   }
   return user;
 }
 
 function getUserByMail(mail) {
-  const user = users.find((user) => user.email == mail);
+  const user = users.find((u) => u.email === mail);
   if (!user) {
-    throw new Error("User not found");
+    throw new Error('User not found');
   }
   return user;
 }
 
 function getUserByBirthDate(birthDate) {
-  const user = users.find((user) => user.birthDate == birthDate);
+  const user = users.find((u) => u.birthDate === new Hebcal.HDate(new Date(birthDate)));
   if (!user) {
-    throw new Error("User not found");
+    throw new Error('User not found');
   }
   return user;
 }
+
 module.exports = {
   createUser,
   updateUser,
@@ -116,5 +120,5 @@ module.exports = {
   getUserByName,
   getUserByPhone,
   getUserByMail,
-  getUsers
+  getUsers,
 };
